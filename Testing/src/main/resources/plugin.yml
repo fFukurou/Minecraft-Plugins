@@ -11,3 +11,6 @@ commands:
   config:
   permissions:
   spawn:
+  world:
+  music:
+  vanish:
