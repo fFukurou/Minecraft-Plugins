@@ -1,0 +1,9 @@
+Word: 'Banana'
+# Hello this is a comment
+Number: 52
+Boolean: true
+String-list:
+  - 'Value1'
+  - 'Value2'
+  - 'Value3'
+

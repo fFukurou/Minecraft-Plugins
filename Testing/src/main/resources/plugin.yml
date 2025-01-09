@@ -1,0 +1,13 @@
+name: TestPlugin
+version: '1.0-SNAPSHOT'
+main: com.ffukurou.test.Main
+api-version: '1.21'
+authors: [ fFukurou ]
+description: First Plugin
+commands:
+  heal:
+    description: heals the player
+  test:
+  config:
+  permissions:
+  spawn:
