@@ -12,6 +12,7 @@ import org.bukkit.entity.Egg;
 import org.bukkit.entity.Firework;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -49,14 +50,13 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("world").setExecutor(new WorldCommand());
         getCommand("music").setExecutor(new PlayMusicCommand());
         getCommand("vanish").setExecutor(new VanishCommand());
+        getCommand("book").setExecutor(new BookCommand());
+        getCommand("banner").setExecutor(new BannerCommand());
+        getCommand("punish").setExecutor(new PunishCommand());
 
         bossBar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "Awesome server!...",
                 BarColor.PINK,
                 BarStyle.SEGMENTED_6);
-
-
-
-
 
     }
 
@@ -112,10 +112,22 @@ public final class Main extends JavaPlugin implements Listener {
 
         e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 2, true, true));
 
+        // RESOURCE PACK
+//        e.getPlayer().setResourcePack("https://download1500.mediafire.com/xc4khd3as7xgWxe79pPLShvPJ5ks5j5CHE2Cv9d12_Eejo9TP8pTK8p1rm1w7-1E0q2fhOzl7Fp_0Q-PdoPLJ5roiHOilNKrjbqbs-s6TRCIWZ6o6bpcFFJ4h-B-kVFwoAe2x4HdwdzF6zvpnYqiwGxJb35V57gtReoKR1FEN8PnENHt/pbk9jqhwl6xxmeo/Equanimity.zip");
+
+        // STATISTICS
+        System.out.println(e.getPlayer().getStatistic(Statistic.CRAFT_ITEM, Material.IRON_LEGGINGS));
+        e.getPlayer().incrementStatistic(Statistic.DROP_COUNT, 1);
+        System.out.println(e.getPlayer().getStatistic(Statistic.DROP_COUNT));
+
 
     }
 
 
+    @EventHandler
+    public void onResourceStatus(PlayerResourcePackStatusEvent e) {
+        //
+    }
 
     @EventHandler
     public void onSneak(PlayerToggleSneakEvent e) {
@@ -145,13 +157,21 @@ public final class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-
+        // Checks to see if it's the Right Hand
         if (e.getHand().equals(EquipmentSlot.HAND)) {
+            // Checks to see if the player is either clicking a block or air
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                // If it is a diamond hoe, throw an egg
                 if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType().equals(Material.DIAMOND_HOE)) {
                     player.launchProjectile(Egg.class, player.getLocation().getDirection());
                 }
+                // If it is an Iron hoe, throw an snowball
+                else if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType().equals(Material.IRON_HOE)) {
+                    player.launchProjectile(Snowball.class, player.getLocation().getDirection());
+                }
             }
+
+
 
             if (e.getPlayer().getInventory().getItemInMainHand() != null & e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR)) {
                 if (enabled) {
@@ -186,9 +206,20 @@ public final class Main extends JavaPlugin implements Listener {
     }
 
 
+    @EventHandler
+    public void onEntityInteract(PlayerInteractEntityEvent e) {
+        if (e.getPlayer().isSneaking()) {
+            e.getPlayer().addPassenger(e.getRightClicked());
+        } else {
+            e.getRightClicked().addPassenger(e.getPlayer());
+        }
+    }
+
 //    @Override
 //    public void onDisable() {
 //        // Plugin shutdown logic
 //        System.out.println("THE PLUGIN FUCKING DIED!");
 //    }
+
+
 }
